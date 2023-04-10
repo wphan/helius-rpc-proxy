@@ -13,14 +13,14 @@ export default {
 		// For example, if you wanted to allow requests from `https://example.com`, you would change the
 		// header to `https://example.com`. Multiple domains are supported by verifying that the request
 		// originated from one of the domains in the `CORS_ALLOW_ORIGIN` environment variable.
-		const supportedDomains = env.CORS_ALLOW_ORIGIN ? env.CORS_ALLOW_ORIGIN.split(',') : undefined;
+		const supportedDomains = env.CORS_ALLOW_ORIGIN ? env.CORS_ALLOW_ORIGIN.split(',').map(pattern => new RegExp(pattern.replace(/\*/g, '.*'))) : undefined;
 		const corsHeaders: Record<string, string> = {
 			"Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, OPTIONS",
 			"Access-Control-Allow-Headers": "*",
 		}
 		if (supportedDomains) {
 			const origin = request.headers.get('Origin')
-			if (origin && supportedDomains.includes(origin)) {
+			if (origin && supportedDomains.some(pattern => pattern.test(origin))) {
 				corsHeaders['Access-Control-Allow-Origin'] = origin
 			}
 		} else {
