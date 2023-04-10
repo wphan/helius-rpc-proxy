@@ -18,13 +18,17 @@ export default {
 			"Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, OPTIONS",
 			"Access-Control-Allow-Headers": "*",
 		}
+
+		let originAllowed = false;
 		if (supportedDomains) {
 			const origin = request.headers.get('Origin')
 			if (origin && supportedDomains.some(pattern => pattern.test(origin))) {
 				corsHeaders['Access-Control-Allow-Origin'] = origin
+				originAllowed = true;
 			}
 		} else {
 			corsHeaders['Access-Control-Allow-Origin'] = '*'
+			originAllowed = true;
 		}
 
 		if (request.method === "OPTIONS") {
@@ -32,6 +36,10 @@ export default {
 				status: 200,
 				headers: corsHeaders,
 			});
+		}
+
+		if (!originAllowed) {
+			return new Response('Forbidden', { status: 403 });
 		}
 
 		const upgradeHeader = request.headers.get('Upgrade')
