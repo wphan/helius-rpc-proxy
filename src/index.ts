@@ -59,11 +59,14 @@ export default {
 			}
 		});
 
-		const resp = await fetch(proxyRequest);
+		const originalResp = await fetch(proxyRequest);
+		
+		const newResponse = new Response(originalResp.body, originalResp);
+
 		Object.entries(corsHeaders).forEach(([key, value]) => {
-			resp.headers.set(key, value);
+			newResponse.headers.set(key, value);
 		});
 
-		return resp;	
+		return newResponse;	
 	},
 };
