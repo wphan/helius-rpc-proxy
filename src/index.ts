@@ -44,7 +44,7 @@ export default {
 
 		const upgradeHeader = request.headers.get('Upgrade')
 		if (upgradeHeader || upgradeHeader === 'websocket') {
-			return await fetch(`https://rpc.helius.xyz/?api-key=${env.HELIUS_API_KEY}`, request)
+			return await fetch(`https://mainnet.helius-rpc.com/?api-key=${env.HELIUS_API_KEY}`, request)
 		}
 
 		const { pathname, search } = new URL(request.url)
